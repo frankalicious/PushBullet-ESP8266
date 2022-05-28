@@ -50,8 +50,7 @@ String PushBullet::buildRequest(String url, String body){
 	return request;
 }
 
-bool PushBullet::sendRequest(String req){
-if(
+void PushBullet::sendRequest(String req){
 #ifdef DEBUGGING
     Serial.println("Request string: ");
 	Serial.println(req);
@@ -69,17 +68,21 @@ void PushBullet::sendAndToggl(String req){
 	
 
 void PushBullet::sendNotePush(const String message, const String title){
-	sendAndToggl("/v2/pushes", "{\"body\":\""+message+"\",\"title\":\""+title+"\",\"type\":\"note\"}");
+        String req = buildRequest(String("/v2/pushes"), "{\"body\":\""+message+"\",\"title\":\""+title+"\",\"type\":\"note\"}");
+        sendAndToggl(req);
 }
 
 void PushBullet::sendLinkPush(const String message, const String title, const String url){
-	sendAndToggl("/v2/pushes", "{\"body\":\""+message+"\",\"title\":\""+title+"\",\"url\":\""+url+"\",\"type\":\"link\"}");		   
+        String req = buildRequest(String("/v2/pushes"), "{\"body\":\""+message+"\",\"title\":\""+title+"\",\"url\":\""+url+"\",\"type\":\"link\"}");
+        sendAndToggl(req);
 }
 
 void PushBullet::sendSMSPush(const String message, const String phoneNumber, const String source_device, const String source_user){
-	sendAndToggl("/v2/ephemerals", "{ \"push\": {    \"conversation_iden\": \""+phoneNumber+"\",    \"message\": \""+message+"\",    \"package_name\": \"com.pushbullet.android\",    \"source_user_iden\": \""+source_user+"\",    \"target_device_iden\": \""+source_device+"\",    \"type\": \"messaging_extension_reply\"  },  \"type\": \"push\"}			");
+	String req = buildRequest(String("/v2/ephemerals"), "{ \"push\": {    \"conversation_iden\": \""+phoneNumber+"\",    \"message\": \""+message+"\",    \"package_name\": \"com.pushbullet.android\",    \"source_user_iden\": \""+source_user+"\",    \"target_device_iden\": \""+source_device+"\",    \"type\": \"messaging_extension_reply\"  },  \"type\": \"push\"}			");
+        sendAndToggl(req);
 }
 
-bool PushBullet::copyToClipboard(const String contents, const String source_device, const String source_user){
-	sendAndToggl("/v2/ephemerals", "{\"push\":{\"body\":\""+contents+"\",\"source_device_iden\":\""+source_device+"\",\"source_user_iden\":\""+source_user+"\",\"type\":\"clip\"},\"type\":\"push\"}");
+void PushBullet::copyToClipboard(const String contents, const String source_device, const String source_user){
+	String req = buildRequest(String("/v2/ephemerals"), "{\"push\":{\"body\":\""+contents+"\",\"source_device_iden\":\""+source_device+"\",\"source_user_iden\":\""+source_user+"\",\"type\":\"clip\"},\"type\":\"push\"}");
+        sendAndToggl(req);
 }

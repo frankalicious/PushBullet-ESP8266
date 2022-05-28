@@ -21,7 +21,7 @@ class PushBullet{
 	private:
 	
 		String buildRequest(String url, String body);
-		bool sendRequest(String reg);
+		void sendRequest(String reg);
 		void sendAndToggl(String req);
 		void togglConnection();
 	
